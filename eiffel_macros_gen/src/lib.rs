@@ -16,11 +16,12 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::{ quote, format_ident };
-use syn::{parse_macro_input, ItemFn, ReturnType, FnArg, Pat, Ident, Meta};
-use syn::punctuated::Punctuated;
+use syn::{parse_macro_input, ItemFn, ReturnType, FnArg, Pat, Ident};
 
 enum CheckTime {
+    #[allow(dead_code)]
     Before,
+    #[allow(dead_code)]
     After,
     BeforeAndAfter,
 }
@@ -72,37 +73,8 @@ enum CheckTime {
 /// ```
 #[proc_macro_attribute]
 pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let macro_args = parse_macro_input!(attr with Punctuated::<Meta, syn::Token![,]>::parse_terminated);
-   
-    let invariant_name = match macro_args.first() {
-        Some(Meta::Path(path)) => path.get_ident().unwrap().clone(),
-        _ => panic!("Expected the name of the function as the first argument"),
-    };
-
-    let mut check_time = CheckTime::BeforeAndAfter;
-
-    for arg in macro_args.iter().skip(1) {
-        match arg {
-            Meta::NameValue(name_value) => {
-                // Check if the argument is check_time == "before" or "after" or "before_and_after"
-                if name_value.path.is_ident("check_time") {
-                    if let syn::Expr::Lit(lit_str) = &name_value.value {
-                        if let syn::Lit::Verbatim(value) = &lit_str.lit {
-                            match value.to_string().as_str() {
-                                "before" => check_time = CheckTime::Before,
-                                "after" => check_time = CheckTime::After,
-                                "before_and_after" => check_time = CheckTime::BeforeAndAfter,
-                                _ => panic!("Invalid argument for check_time. Expected 'before', 'after', or 'before_and_after'")
-                            }
-                        }
-                    } else {
-                        panic!("Expected a string literal for the check_time argument");
-                    }
-                }
-            },
-            _ => ()
-        }
-    };
+    let invariant_name = parse_macro_input!(attr as Ident);
+    let check_time = CheckTime::BeforeAndAfter;
 
     // Extract the name, arguments, and return type of the input function
     let input_fn = parse_macro_input!(item as ItemFn);
@@ -157,7 +129,7 @@ pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
         _ => quote! {},
     };
 
-    let call_invariant_after = quote! {
+    let call_invariant_after = match check_time {
         CheckTime::After | CheckTime::BeforeAndAfter => quote! {
             if !self.#invariant_name() {
                 panic!("Invariant {} failed on exit", stringify!(#invariant_name));

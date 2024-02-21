@@ -30,7 +30,7 @@ mod tests {
   }
 
   impl MyClass {
-  fn my_invariant(&self) -> bool {
+    fn my_invariant(&self) -> bool {
       // Your invariant checks here
       self.a > 0
     }
