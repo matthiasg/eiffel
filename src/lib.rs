@@ -14,10 +14,10 @@
 #![deny(missing_docs)]
 
 // Re-export macros from eiffel-macros submodule
-// pub use eiffel_macros::*;
+pub use eiffel_macros::*;
 
 // Re-export macros from eiffel-gen submodule
-// pub use eiffel_macros_gen::*;
+pub use eiffel_macros_gen::*;
 
 #[cfg(test)]
 mod tests {
