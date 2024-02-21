@@ -19,6 +19,9 @@ pub use eiffel_macros::*;
 // Re-export macros from eiffel-gen submodule
 pub use eiffel_macros_gen::*;
 
+
+// We test the generated code macros here, because we cannot mix
+// standard macros with procedural macros due to Cargo's restrictions.
 #[cfg(test)]
 mod tests {
   // use super::*;
