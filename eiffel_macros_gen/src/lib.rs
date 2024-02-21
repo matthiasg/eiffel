@@ -17,6 +17,7 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::{ quote, format_ident };
 use syn::{parse_macro_input, ItemFn, ReturnType, FnArg, Pat, Ident};
+use syn::Meta;
 
 enum CheckTime {
     #[allow(dead_code)]
@@ -73,8 +74,38 @@ enum CheckTime {
 /// ```
 #[proc_macro_attribute]
 pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let invariant_name = parse_macro_input!(attr as Ident);
+    // let invariant_name = parse_macro_input!(attr as Ident);
+    // let check_time = CheckTime::BeforeAndAfter;
+    let mut invariant_name = None;
     let check_time = CheckTime::BeforeAndAfter;
+
+    let attr = parse_macro_input!(attr as Meta);
+
+    match attr {
+        Meta::Path(ref path) => {
+            let ident = path.get_ident();
+            invariant_name = Some(ident.clone());
+        },
+        Meta::List(ref _list) => {
+            // for nested_meta in list.nested {
+            //     if let NestedMeta::Meta(Meta::NameValue(name_value)) = nested_meta {
+            //         let key = name_value.path.get_ident().unwrap().clone();
+            //         let value = match name_value.lit {
+            //             Lit::Str(lit_str) => lit_str.value(),
+            //             _ => panic!("Expected a string literal for the value"),
+            //         };
+            //         // Handle the case where attr is a list with key-value pairs
+            //     }
+            // }
+        },
+        _ => panic!("Expected an identifier or a list with key-value pairs"),
+    }
+
+    if invariant_name.is_none() {
+        panic!("Expected an identifier or a list with key-value pairs");
+    }
+
+    let invariant_name = invariant_name.unwrap();
 
     // Extract the name, arguments, and return type of the input function
     let input_fn = parse_macro_input!(item as ItemFn);
