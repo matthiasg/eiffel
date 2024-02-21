@@ -93,9 +93,16 @@ impl Parse for AttrList {
 ///         println!("Method body {:?}", self.a);
 ///     }
 ///
-///     // Only check the invariant before the method call
-///     #[check_invariant(my_invariant, "before")]
-///     fn my_other_method(&self) {
+///     // Only check the invariant after the method call
+///     #[check_invariant(my_invariant, "after")]
+///     fn my_other_method_after(&self) {
+///         // Method body
+///         println!("Method body {:?}", self.a);
+///     }
+///
+///     // Only check the invariant before and after (default)
+///     #[check_invariant(my_invariant, "before_and_after")]
+///     fn my_other_method_before_and_after(&self) {
 ///         // Method body
 ///         println!("Method body {:?}", self.a);
 ///     }
