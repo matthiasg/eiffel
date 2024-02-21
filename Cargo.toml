@@ -7,8 +7,8 @@ edition = "2021"
 
 [workspace]
 members = [
-    "./eiffel_macros",
-    "./eiffel_macros_gen"
+    "eiffel_macros",
+    "eiffel_macros_gen"
 ]
 
 [dependencies]
