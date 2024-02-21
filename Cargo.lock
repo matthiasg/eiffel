@@ -3,9 +3,30 @@
 version = 3
 
 [[package]]
-name = "eiffel-macros"
+name = "eiffel"
 version = "0.1.0"
 dependencies = [
+ "eiffel_macros",
+ "eiffel_macros_gen",
+ "quote",
+ "syn",
+ "thiserror",
+]
+
+[[package]]
+name = "eiffel_macros"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
+]
+
+[[package]]
+name = "eiffel_macros_gen"
+version = "0.1.0"
+dependencies = [
+ "eiffel_macros",
+ "quote",
+ "syn",
  "thiserror",
 ]
 
