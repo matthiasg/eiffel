@@ -21,4 +21,4 @@ jobs:
     - name: Run tests
       run: cargo test --workspace --verbose
     - name: Run tests in docs
-      run: cargo test --workspace --docs --verbose
+      run: cargo test --workspace --doc --verbose
