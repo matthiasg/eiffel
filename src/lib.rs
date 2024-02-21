@@ -41,6 +41,20 @@ mod tests {
       self.a += value_to_add;
       // println!("Method body {:?}", self.a);
     }
+
+    #[check_invariant(my_invariant, "before")]
+    fn my_method_before_only(&mut self, value_to_add: i32) {
+      // Method body
+      self.a += value_to_add;
+      // println!("Method body {:?}", self.a);
+    }
+
+    #[check_invariant(my_invariant, "after")]
+    fn my_method_after_only(&mut self, value_to_add: i32) {
+      // Method body
+      self.a += value_to_add;
+      // println!("Method body {:?}", self.a);
+    }
   }       
 
   #[test]
@@ -61,5 +75,31 @@ mod tests {
     };
 
     my_class.my_method(2);
+
+    assert_eq!(my_class.a, 1);
+  }
+
+  #[test]
+  fn test_only_check_before_only() {
+    let mut my_class = MyClass {
+      a: 1
+    };
+
+    // Would panic if the check was after the method call
+    my_class.my_method_before_only(-2);
+
+    assert_eq!(my_class.a, -1);
+  }
+
+  #[test]
+  fn test_only_check_after_only() {
+    let mut my_class = MyClass {
+      a: -1
+    };
+
+    // Would panic if the check was after the method call
+    my_class.my_method_after_only(2);
+
+    assert_eq!(my_class.a, 1);
   }
 }

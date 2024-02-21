@@ -25,6 +25,7 @@ name = "eiffel_macros_gen"
 version = "0.1.0"
 dependencies = [
  "eiffel_macros",
+ "proc-macro2",
  "quote",
  "syn",
  "thiserror",

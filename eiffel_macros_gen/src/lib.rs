@@ -16,8 +16,10 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::{ quote, format_ident };
-use syn::{parse_macro_input, ItemFn, ReturnType, FnArg, Pat, Ident};
-use syn::Meta;
+use syn::{parse_macro_input, ItemFn, ReturnType, Result, FnArg, Pat, Ident};
+use syn::parse::{Parse, ParseStream};
+use proc_macro2::TokenTree;
+use syn::token::Comma;
 
 enum CheckTime {
     #[allow(dead_code)]
@@ -27,12 +29,40 @@ enum CheckTime {
     BeforeAndAfter,
 }
 
+struct AttrList {
+    #[allow(dead_code)]
+    invariant_function_identifier: Ident,
+    #[allow(dead_code)]
+    rest: Vec<TokenTree>,
+}
+
+impl Parse for AttrList {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let first_ident: Ident = input.parse()?;
+
+        if input.is_empty() {
+            return Ok(AttrList { invariant_function_identifier: first_ident, rest: vec![] });
+        }
+
+        let mut rest = Vec::new();
+
+        while !input.is_empty() {
+            let _: Comma = input.parse()?;
+            let item: TokenTree = input.parse()?;
+            rest.push(item);
+        }
+
+        Ok(AttrList { invariant_function_identifier: first_ident, rest })
+    }
+}
+
 /// `check_invariant` is a procedural macro that checks if a given invariant holds true before and after a method call.
 /// If the invariant does not hold, the macro will cause the program to panic with a specified message.
 /// 
 /// # Arguments
 /// 
 /// * `invariant`: A method that returns a boolean. This is the invariant that needs to be checked.
+/// * `check_time`: An optional string literal that specifies when the invariant should be checked. The possible values are: "before", "after", "before_and_after".
 /// 
 /// # Example
 ///
@@ -55,6 +85,21 @@ enum CheckTime {
 ///         // Method body
 ///         println!("Method body {:?}", self.a);
 ///     }
+///
+///     // Only check the invariant before the method call
+///     #[check_invariant(my_invariant, "before")]
+///     fn my_other_method(&self) {
+///         // Method body
+///         println!("Method body {:?}", self.a);
+///     }
+///
+///     // Only check the invariant before the method call
+///     #[check_invariant(my_invariant, "before")]
+///     fn my_other_method(&self) {
+///         // Method body
+///         println!("Method body {:?}", self.a);
+///     }
+///
 /// }       
 /// ```
 ///
@@ -76,36 +121,27 @@ enum CheckTime {
 pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
     // let invariant_name = parse_macro_input!(attr as Ident);
     // let check_time = CheckTime::BeforeAndAfter;
-    let mut invariant_name = None;
-    let check_time = CheckTime::BeforeAndAfter;
+    let mut check_time = None;
+    
+    let attr = parse_macro_input!(attr as AttrList);
+    let invariant_name = attr.invariant_function_identifier;
 
-    let attr = parse_macro_input!(attr as Meta);
-
-    match attr {
-        Meta::Path(ref path) => {
-            let ident = path.get_ident();
-            invariant_name = Some(ident.clone());
-        },
-        Meta::List(ref _list) => {
-            // for nested_meta in list.nested {
-            //     if let NestedMeta::Meta(Meta::NameValue(name_value)) = nested_meta {
-            //         let key = name_value.path.get_ident().unwrap().clone();
-            //         let value = match name_value.lit {
-            //             Lit::Str(lit_str) => lit_str.value(),
-            //             _ => panic!("Expected a string literal for the value"),
-            //         };
-            //         // Handle the case where attr is a list with key-value pairs
-            //     }
-            // }
-        },
-        _ => panic!("Expected an identifier or a list with key-value pairs"),
+    for item in attr.rest.into_iter() {
+        match item {
+            TokenTree::Literal(literal) => {
+                let msg = literal.to_string();
+                match msg.as_str() {
+                    "\"before\"" => check_time = Some(CheckTime::Before),
+                    "\"after\"" => check_time = Some(CheckTime::After),
+                    "\"before_and_after\"" => check_time = Some(CheckTime::BeforeAndAfter),
+                    _ => panic!("Invalid check time: {}, expected one of: \"before\", \"after\", \"before_and_after\"", msg)
+                }
+            }
+            _ => {}
+        }
     }
 
-    if invariant_name.is_none() {
-        panic!("Expected an identifier or a list with key-value pairs");
-    }
-
-    let invariant_name = invariant_name.unwrap();
+    let check_time = check_time.unwrap_or(CheckTime::BeforeAndAfter);
 
     // Extract the name, arguments, and return type of the input function
     let input_fn = parse_macro_input!(item as ItemFn);
