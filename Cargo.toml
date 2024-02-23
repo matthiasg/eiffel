@@ -15,5 +15,5 @@ members = [
 syn = { version = "2.0.50", features = ["full"] }
 quote = "1.0"
 thiserror = "1.0.57"
-eiffel_macros = { path = "./eiffel_macros" }
-eiffel_macros_gen = { path = "./eiffel_macros_gen" }
+eiffel_macros = { path = "eiffel_macros" }
+eiffel_macros_gen = { path = "eiffel_macros_gen" }

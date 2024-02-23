@@ -1,6 +1,6 @@
 {
   "rust-analyzer.linkedProjects": [
-    "./eiffel-macros-gen/Cargo.toml",
+    "./eiffel_macros_gen/Cargo.toml",
     "./eiffel_macros/Cargo.toml"
   ]
 }
