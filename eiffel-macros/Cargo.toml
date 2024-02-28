@@ -1,6 +1,6 @@
 [package]
 name = "eiffel-macros"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 authors = ["Matthias Götzke <m.goetzke@curasystems.de>"]
 homepage = "https://github.com/matthiasg/eiffel"

@@ -15,7 +15,7 @@ pub use eiffel_macros_gen::*;
 #[cfg(test)]
 mod tests {
   // use super::*;
-  use eiffel_macros_gen::check_invariant;
+  use eiffel_macros_gen::*;
 
   struct MyClass {
     // Fields
@@ -28,21 +28,21 @@ mod tests {
       self.a > 0
     }
 
-    #[check_invariant(my_invariant)]
+    #[contract(my_invariant)]
     fn my_method(&mut self, value_to_add: i32) {
       // Method body
       self.a += value_to_add;
       // println!("Method body {:?}", self.a);
     }
 
-    #[check_invariant(my_invariant, "before")]
+    #[contract(my_invariant, "require")]
     fn my_method_before_only(&mut self, value_to_add: i32) {
       // Method body
       self.a += value_to_add;
       // println!("Method body {:?}", self.a);
     }
 
-    #[check_invariant(my_invariant, "after")]
+    #[contract(my_invariant, "ensure")]
     fn my_method_after_only(&mut self, value_to_add: i32) {
       // Method body
       self.a += value_to_add;

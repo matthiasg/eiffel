@@ -1,6 +1,6 @@
 //! This create contains the procedural macros
 //! 
-//! Mostly the procedural macro [check_invariant](macro@check_invariant) which is used to check if a given invariant holds true before and after a method call.
+//! Mostly the procedural macro [contract](macro@contract) which is used to check if a given invariant holds true before and after a method call.
 //!
 #![deny(warnings)]
 #![deny(missing_docs)]
@@ -15,10 +15,10 @@ use syn::token::Comma;
 
 enum CheckTime {
     #[allow(dead_code)]
-    Before,
+    Require,
     #[allow(dead_code)]
-    After,
-    BeforeAndAfter,
+    Ensure,
+    RequireAndEnsure,
 }
 
 struct AttrList {
@@ -48,21 +48,21 @@ impl Parse for AttrList {
     }
 }
 
-/// `check_invariant` is a procedural macro that checks if a given invariant holds true before and after a method call.
+/// `contract` is a procedural macro that checks if a given invariant holds true before and after a method call.
 /// If the invariant does not hold, the macro will cause the program to panic with a specified message.
 /// 
 /// # Arguments
 /// 
-/// * `invariant`: A method that returns a boolean. This is the invariant that needs to be checked.
+/// * `invariant`: A struct method identifier that returns a boolean. This is the invariant that needs to be checked.
 /// * `check_time`: An optional string literal that specifies when the invariant should be checked.
-///   * `"before"` - The invariant is checked before the operation.
-///   * `"after"` - The invariant is checked after the operation.
-///   * `"before_and_after"` - The invariant is checked both before and after the operation.
+///   * `"require"` - The invariant is checked before the operation.
+///   * `"ensure"` - The invariant is checked after the operation.
+///   * `"require_and_ensure"` - The invariant is checked both before and after the operation.
 /// 
 /// # Example
 ///
 /// ```
-/// use eiffel_macros_gen::check_invariant;
+/// use eiffel_macros_gen::contract;
 /// 
 /// struct MyClass {
 ///     // Fields
@@ -75,28 +75,28 @@ impl Parse for AttrList {
 ///         true
 ///     }
 ///
-///     #[check_invariant(my_invariant)]
+///     #[contract(my_invariant)]
 ///     fn my_method(&self) {
 ///         // Method body
 ///         println!("Method body {:?}", self.a);
 ///     }
 ///
 ///     // Only check the invariant before the method call
-///     #[check_invariant(my_invariant, "before")]
+///     #[contract(my_invariant, "require")]
 ///     fn my_other_method(&self) {
 ///         // Method body
 ///         println!("Method body {:?}", self.a);
 ///     }
 ///
 ///     // Only check the invariant after the method call
-///     #[check_invariant(my_invariant, "after")]
+///     #[contract(my_invariant, "ensure")]
 ///     fn my_other_method_after(&self) {
 ///         // Method body
 ///         println!("Method body {:?}", self.a);
 ///     }
 ///
 ///     // Only check the invariant before and after (default)
-///     #[check_invariant(my_invariant, "before_and_after")]
+///     #[contract(my_invariant, "require_and_ensure")]
 ///     fn my_other_method_before_and_after(&self) {
 ///         // Method body
 ///         println!("Method body {:?}", self.a);
@@ -120,9 +120,9 @@ impl Parse for AttrList {
 /// }
 /// ```
 #[proc_macro_attribute]
-pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn contract(attr: TokenStream, item: TokenStream) -> TokenStream {
     // let invariant_name = parse_macro_input!(attr as Ident);
-    // let check_time = CheckTime::BeforeAndAfter;
+    // let check_time = CheckTime::RequireAndEnsure;
     let mut check_time = None;
     
     let attr = parse_macro_input!(attr as AttrList);
@@ -133,17 +133,17 @@ pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
             TokenTree::Literal(literal) => {
                 let msg = literal.to_string();
                 match msg.as_str() {
-                    "\"before\"" => check_time = Some(CheckTime::Before),
-                    "\"after\"" => check_time = Some(CheckTime::After),
-                    "\"before_and_after\"" => check_time = Some(CheckTime::BeforeAndAfter),
-                    _ => panic!("Invalid check time: {}, expected one of: \"before\", \"after\", \"before_and_after\"", msg)
+                    "\"require\"" => check_time = Some(CheckTime::Require),
+                    "\"ensure\"" => check_time = Some(CheckTime::Ensure),
+                    "\"require_and_ensure\"" => check_time = Some(CheckTime::RequireAndEnsure),
+                    _ => panic!("Invalid check time: {}, expected one of: \"require\", \"ensure\", \"require_and_ensure\"", msg)
                 }
             }
             _ => {}
         }
     }
 
-    let check_time = check_time.unwrap_or(CheckTime::BeforeAndAfter);
+    let check_time = check_time.unwrap_or(CheckTime::RequireAndEnsure);
 
     // Extract the name, arguments, and return type of the input function
     let input_fn = parse_macro_input!(item as ItemFn);
@@ -188,9 +188,9 @@ pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
             }
         }
     };
-
+    
     let call_invariant_before = match check_time {
-        CheckTime::Before | CheckTime::BeforeAndAfter => quote! {
+        CheckTime::Require | CheckTime::RequireAndEnsure => quote! {
             if !self.#invariant_name() {
                 panic!("Invariant {} failed on entry", stringify!(#invariant_name));
             }
@@ -199,7 +199,7 @@ pub fn check_invariant(attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     let call_invariant_after = match check_time {
-        CheckTime::After | CheckTime::BeforeAndAfter => quote! {
+        CheckTime::Ensure | CheckTime::RequireAndEnsure => quote! {
             if !self.#invariant_name() {
                 panic!("Invariant {} failed on exit", stringify!(#invariant_name));
             }

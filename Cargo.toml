@@ -1,6 +1,6 @@
 [package]
 name = "eiffel"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 authors = ["Matthias Götzke <m.goetzke@curasystems.de>"]
 homepage = "https://github.com/matthiasg/eiffel"
@@ -22,7 +22,3 @@ quote = "1.0"
 thiserror = "1.0.57"
 eiffel-macros = { path = "eiffel-macros", version = ">=0.0.3" }
 eiffel-macros-gen = { path = "eiffel-macros-gen", version = ">=0.0.3" }
-
-
-[dev-dependencies]
-release-plz = "0.3.49"
