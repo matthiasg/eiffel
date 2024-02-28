@@ -1,0 +1,20 @@
+[package]
+name = "eiffel-macros-gen"
+version = "0.0.1"
+edition = "2021"
+authors = ["Matthias Götzke <m.goetzke@curasystems.de>"]
+homepage = "https://github.com/matthiasg/eiffel"
+license = "MIT"
+description = "Eiffel is a library for Eiffel language inspired guard clauses with Rust macros. This is the proc-macro part of the library."
+documentation = "https://docs.rs/eiffel-macros-gen"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2.0.50", features = ["full"] }
+quote = "1.0"
+thiserror = "1.0.57"
+proc-macro2 = "1.0.78"
