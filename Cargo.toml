@@ -20,8 +20,8 @@ members = [
 syn = { version = "2.0.50", features = ["full"] }
 quote = "1.0"
 thiserror = "1.0.57"
-eiffel-macros = { path = "eiffel-macros" }
-eiffel-macros-gen = { path = "eiffel-macros-gen" }
+eiffel-macros = { path = "eiffel-macros", version="0.0.2" }
+eiffel-macros-gen = { path = "eiffel-macros-gen", version="0.0.2" }
 
 [dev-dependencies]
 release-plz = "0.3.49"
