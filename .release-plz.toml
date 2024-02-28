@@ -1,0 +1,19 @@
+[workspace]
+
+[[package]] # the double square brackets define a TOML table array
+name = "eiffel"
+changelog_include = ["eiffel-macros", "eiffel-macros-gen"] # include commits from `package_b` in the changelog
+changelog_update = true
+git_release_enable = true 
+publish = true
+
+[[package]] 
+name = "eiffel-macros"
+publish = false
+
+[[package]] 
+name = "eiffel-macros-gen"
+publish = false
+
+[changelog]
+protect_breaking_commits = true # always include commits with breaking changes in the changelog
