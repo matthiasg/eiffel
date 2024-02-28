@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
     branches: [ "main" ]
+  # Run tests every day at 00:00 UTC against all Rust toolchains
+  schedule:
+    - cron: "0 0 * * *"
 
 env:
   CARGO_TERM_COLOR: always
