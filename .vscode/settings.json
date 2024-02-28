@@ -2,5 +2,6 @@
   "rust-analyzer.linkedProjects": [
     "./eiffel_macros_gen/Cargo.toml",
     "./eiffel_macros/Cargo.toml"
-  ]
+  ],
+  "github-actions.workflows.pinned.workflows": []
 }

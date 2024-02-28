@@ -1,15 +1,5 @@
-//! # Eiffel Inspired Invariant Checking
-//!
-//! This crate provides a set of macros inspired by the Eiffel programming language's
-//! features for invariant checking. These features include checks for loops, entry, exit, and more.
-//!
-//! The Eiffel language's options for invariant checking serve as the basis for the design
-//! and functionality of the macros in this crate.
-//!
-//! Please note that this crate is still a work in progress. As such, some features may not be fully
-//! implemented or may undergo significant changes in future updates.
-//!
-//! Contributions and feedback are always welcome.
+#![doc = include_str!("../README.md")]
+
 #![deny(warnings)]
 #![deny(missing_docs)]
 

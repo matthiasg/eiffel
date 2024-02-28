@@ -1,6 +1,6 @@
 [package]
 name = "eiffel"
-version = "0.1.0"
+version = "0.0.2"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -17,3 +17,6 @@ quote = "1.0"
 thiserror = "1.0.57"
 eiffel_macros = { path = "eiffel_macros" }
 eiffel_macros_gen = { path = "eiffel_macros_gen" }
+
+[dev-dependencies]
+release-plz = "0.3.49"

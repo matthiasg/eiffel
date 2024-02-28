@@ -1,15 +1,7 @@
-//! # Eiffel Inspired Invariant Checking
+//! This create contains the procedural macros
+//! 
+//! Mostly the procedural macro [check_invariant](macro@check_invariant) which is used to check if a given invariant holds true before and after a method call.
 //!
-//! This crate provides a set of macros inspired by the Eiffel programming language's
-//! features for invariant checking. These features include checks for loops, entry, exit, and more.
-//!
-//! The Eiffel language's options for invariant checking serve as the basis for the design
-//! and functionality of the macros in this crate.
-//!
-//! Please note that this crate is still a work in progress. As such, some features may not be fully
-//! implemented or may undergo significant changes in future updates.
-//!
-//! Contributions and feedback are always welcome.
 #![deny(warnings)]
 #![deny(missing_docs)]
 extern crate proc_macro;
@@ -62,7 +54,10 @@ impl Parse for AttrList {
 /// # Arguments
 /// 
 /// * `invariant`: A method that returns a boolean. This is the invariant that needs to be checked.
-/// * `check_time`: An optional string literal that specifies when the invariant should be checked. The possible values are: "before", "after", "before_and_after".
+/// * `check_time`: An optional string literal that specifies when the invariant should be checked.
+///   * `"before"` - The invariant is checked before the operation.
+///   * `"after"` - The invariant is checked after the operation.
+///   * `"before_and_after"` - The invariant is checked both before and after the operation.
 /// 
 /// # Example
 ///
