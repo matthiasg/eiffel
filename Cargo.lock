@@ -942,8 +942,8 @@ dependencies = [
 name = "eiffel"
 version = "0.0.2"
 dependencies = [
- "eiffel_macros",
- "eiffel_macros_gen",
+ "eiffel-macros",
+ "eiffel-macros-gen",
  "quote",
  "release-plz",
  "syn 2.0.50",
@@ -951,15 +951,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "eiffel_macros"
-version = "0.1.0"
+name = "eiffel-macros"
+version = "0.0.1"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
-name = "eiffel_macros_gen"
-version = "0.1.0"
+name = "eiffel-macros-gen"
+version = "0.0.1"
 dependencies = [
  "proc-macro2",
  "quote",

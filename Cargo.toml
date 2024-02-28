@@ -2,21 +2,26 @@
 name = "eiffel"
 version = "0.0.2"
 edition = "2021"
+authors = ["Matthias Götzke <m.goetzke@curasystems.de>"]
+homepage = "https://github.com/matthiasg/eiffel"
+license = "MIT"
+description = "Eiffel is a library for Eiffel language inspired guard clauses with Rust macros."
+documentation = "https://docs.rs/eiffel"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
 members = [
-    "eiffel_macros",
-    "eiffel_macros_gen"
+    "eiffel-macros",
+    "eiffel-macros-gen"
 ]
 
 [dependencies]
 syn = { version = "2.0.50", features = ["full"] }
 quote = "1.0"
 thiserror = "1.0.57"
-eiffel_macros = { path = "eiffel_macros" }
-eiffel_macros_gen = { path = "eiffel_macros_gen" }
+eiffel-macros = { path = "eiffel-macros" }
+eiffel-macros-gen = { path = "eiffel-macros-gen" }
 
 [dev-dependencies]
 release-plz = "0.3.49"
